@@ -170,30 +170,7 @@
             padding: 2rem 0;
             margin-top: 4rem;
         }
-        
-        .whatsapp-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background-color: #25D366;
-            color: white;
-            border-radius: 50%;
-            text-align: center;
-            font-size: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        
-        .whatsapp-float:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
-        }
+    
     </style>
 </head>
 <body>
@@ -291,10 +268,7 @@
         </div>
     </div>
 
-    <!-- WhatsApp Float -->
-    <a href="https://wa.me/5215512345678" class="whatsapp-float" target="_blank">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+
 
  
 

@@ -56,9 +56,9 @@ $request = [
         ]
     ],
     "back_urls" => [
-        "failure" => "https://7c18ca02aa4d.ngrok-free.app/landing/landinMD/mercadoPagoEvents/failure.php",
-        "pending" => "https://7c18ca02aa4d.ngrok-free.app/landing/landinMD/mercadoPagoEvents/pending.php",
-        "success" => "https://7c18ca02aa4d.ngrok-free.app/landing/landinMD/mercadoPagoEvents/success.php",
+        "failure" => "https://49a2c93af6e0.ngrok-free.app/landing/landinMD/mercadoPagoEvents/failure.php",
+        "pending" => "https://49a2c93af6e0.ngrok-free.app/landing/landinMD/mercadoPagoEvents/pending.php",
+        "success" => "https://49a2c93af6e0.ngrok-free.app/landing/landinMD/mercadoPagoEvents/success.php",
     ],
     "auto_return" => "approved",
     "payer" => [

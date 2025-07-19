@@ -306,7 +306,13 @@ if ($company_id && $package_type && $status === 'approved' && $payment_id && $pa
                                     <p class="text-muted">Hemos enviado el comprobante de pago a tu email registrado.</p>
                                 </div>
                             </div>
-                         
+                            <div class="col-md-4">
+                                <div class="feature-card text-center">
+                                    <i class="fas fa-shield-alt feature-icon"></i>
+                                    <h5>Datos Protegidos</h5>
+                                    <p class="text-muted">Tu información está segura y no se ha perdido ningún dato del registro.</p>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="text-center mt-5 pt-4">
