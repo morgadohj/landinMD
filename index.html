@@ -557,24 +557,27 @@
                     <div class="alert alert-info text-center mb-4">
                         <i class="fas fa-info-circle"></i> Al registrarte tendrás <strong>15 días de prueba gratis</strong> para explorar todas las funcionalidades del sistema
                     </div>
-                    <form id="registrationForm" action="registerHandler.php" method="POST">
+                    <form id="registrationForm" action="registerHandler.php" method="POST" autocomplete="off">
                         <div id="planInfo" class="alert alert-info text-center mb-4">
                             <!-- La información del plan se cargará dinámicamente -->
                         </div>
-
+                        <!-- Div para mostrar errores -->
+                        <div id="registrationError" class="alert alert-danger text-center mb-4" style="display:none;"></div>
                         <input type="hidden" name="package_type" id="packageType">
 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="company_name" class="form-label">Nombre de la empresa</label>
-                                    <input type="text" name="company_name" id="company_name" class="form-control" required>
+                                    <input type="text" name="company_name" id="company_name" class="form-control" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]{2,50}$" title="Solo letras, números y espacios. Mínimo 2 caracteres. No símbolos." required minlength="2" maxlength="50">
+                                    <div class="invalid-feedback">Nombre inválido. Solo letras, números y espacios. Mínimo 2 caracteres.</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="alias" class="form-label">Alias de la tienda (sin espacios)</label>
-                                    <input type="text" name="alias" id="alias" class="form-control" pattern="[a-zA-Z0-9_-]+" required>
+                                    <input type="text" name="alias" id="alias" class="form-control" pattern="^[a-z0-9_-]{3,30}$" title="Solo minúsculas, números, guiones y guión bajo. Mínimo 3 caracteres. No espacios, no mayúsculas." required minlength="3" maxlength="30">
+                                    <div class="invalid-feedback">Alias inválido. Usa solo minúsculas, números, guiones o guión bajo. Mínimo 3 caracteres.</div>
                                 </div>
                             </div>
                         </div>
@@ -583,13 +586,15 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Nombre del administrador</label>
-                                    <input type="text" name="username" id="username" class="form-control" required>
+                                    <input type="text" name="username" id="username" class="form-control" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{2,50}$" title="Solo letras y espacios. Mínimo 2 caracteres. No símbolos ni números." required minlength="2" maxlength="50">
+                                    <div class="invalid-feedback">Nombre inválido. Solo letras y espacios. Mínimo 2 caracteres.</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Correo electrónico</label>
-                                    <input type="email" name="email" id="email" class="form-control" required>
+                                    <input type="email" name="email" id="email" class="form-control" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|mx|net|org|edu|gov)$" title="Correo debe ser válido y terminar en .com, .mx, .net, .org, .edu o .gov" required maxlength="100">
+                                    <div class="invalid-feedback">Correo inválido. Usa un dominio como .com, .mx, .net, .org, .edu o .gov.</div>
                                 </div>
                             </div>
                         </div>
@@ -598,13 +603,15 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Contraseña</label>
-                                    <input type="password" name="password" id="password" class="form-control" minlength="6" required>
+                                    <input type="password" name="password" id="password" class="form-control" pattern=".{6,30}" minlength="6" maxlength="30" title="Debe tener entre 6 y 30 caracteres" required>
+                                    <div class="invalid-feedback">Contraseña inválida. Mínimo 6 caracteres.</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="phone" class="form-label">Teléfono</label>
-                                    <input type="text" name="phone" id="phone" class="form-control" required>
+                                    <input type="tel" name="phone" id="phone" class="form-control" pattern="^(\+52)?[0-9]{10,15}$" title="Número de 10 a 15 dígitos. Puede iniciar con +52" required minlength="10" maxlength="15">
+                                    <div class="invalid-feedback">Teléfono inválido. Debe tener entre 10 y 15 dígitos, puede iniciar con +52.</div>
                                 </div>
                             </div>
                         </div>
@@ -756,43 +763,149 @@
         // Limpiar el formulario cuando se cierre el modal
         $('#registrationModal').on('hidden.bs.modal', function () {
             document.getElementById('registrationForm').reset();
+            document.getElementById('registrationError').style.display = 'none';
+            document.getElementById('registrationError').innerText = '';
         });
 
         // Manejar el envío del formulario
         document.getElementById('registrationForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            // Limpiar error previo
+            document.getElementById('registrationError').style.display = 'none';
+            document.getElementById('registrationError').innerText = '';
             const form = this;
             const submitBtn = form.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Procesando...';
             submitBtn.disabled = true;
 
-            // Enviar datos por AJAX
+            // Obtener valores
+            const email = form.email.value;
+            const phone = form.phone.value;
+            const alias = form.alias.value;
+            const company_name = form.company_name.value;
+
+            // Validar por AJAX antes de enviar
             $.ajax({
-                url: form.action,
+                url: 'validate_registration.php',
                 type: 'POST',
-                data: $(form).serialize(),
-                success: function(response) {
-                    // Mostrar el modal de bienvenida
-                    $('#registrationModal').modal('hide');
-                    setTimeout(function() {
-                        $('#welcomeModal').modal('show');
-                    }, 500);
+                data: { email, phone, alias, company_name },
+                dataType: 'json',
+                success: function(res) {
+                    if (res.error) {
+                        showError('Ocurrió un error: ' + res.error);
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+                    if (res.email_exists) {
+                        showError('El correo electrónico ingresado ya está registrado. Por favor, utiliza otro.');
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+                    if (res.phone_exists) {
+                        showError('El número de teléfono ingresado ya está registrado. Por favor, utiliza otro.');
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+                    if (res.alias_exists) {
+                        showError('El alias de la tienda ya está en uso. Por favor, elige otro alias.');
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+                    if (res.company_name_exists) {
+                        showError('El nombre de la empresa ya está en uso. Por favor, elige otro nombre.');
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+
+                    // Si todo está bien, enviar el formulario por AJAX como antes
+                    $.ajax({
+                        url: form.action,
+                        type: 'POST',
+                        data: $(form).serialize(),
+                        success: function(response) {
+                            $('#registrationModal').modal('hide');
+                            setTimeout(function() {
+                                $('#welcomeModal').modal('show');
+                            }, 500);
+                        },
+                        error: function(xhr) {
+                            showError('Ocurrió un error al registrar. Por favor, inténtalo de nuevo más tarde.');
+                        },
+                        complete: function() {
+                            submitBtn.innerHTML = originalText;
+                            submitBtn.disabled = false;
+                        }
+                    });
                 },
                 error: function(xhr) {
-                    alert('Ocurrió un error al registrar. Intenta de nuevo.');
-                },
-                complete: function() {
+                    showError('No se pudo validar la información. Por favor, revisa tu conexión o inténtalo más tarde.');
                     submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
                 }
             });
         });
+
+        // Función para mostrar errores de forma clara y visible
+        function showError(message) {
+            var errorDiv = document.getElementById('registrationError');
+            errorDiv.innerText = message;
+            errorDiv.style.display = 'block';
+        }
     </script>
 
-<a href="https://wa.me/2299536896?text=Hola,%20necesito%20soporte%20con%20mi%20sistema" class="whatsapp-float" target="_blank" title="¡Envíanos un mensaje por WhatsApp!">
-  <i class="fab fa-whatsapp"></i>
-</a>    
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Limpiar el formulario al cargar la página
+    document.getElementById("registrationForm").reset();
+
+    const form = document.getElementById("registrationForm");
+
+    form.addEventListener("submit", function (event) {
+        // HTML5 validation
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add("was-validated");
+    });
+
+    // Prevención adicional: bloquear caracteres raros en nombres
+    ["company_name", "username"].forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener("input", () => {
+            el.value = el.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]/g, "");
+        });
+    });
+
+    // Alias solo minúsculas, números, guión y guión bajo
+    document.getElementById("alias").addEventListener("input", function () {
+        this.value = this.value.toLowerCase().replace(/[^a-z0-9_-]/g, "");
+    });
+
+    // Teléfono: solo números y opcionalmente +52 al inicio
+    document.getElementById("phone").addEventListener("input", function () {
+        // Permitir solo dígitos y un posible +52 al inicio
+        let val = this.value.replace(/[^0-9+]/g, "");
+        if(val.startsWith("+")) {
+            val = val.replace(/^\+(?!52)/, ""); // Solo permitir +52
+            if(!val.startsWith("+52")) val = val.replace(/^\+/, "");
+        }
+        this.value = val;
+    });
+
+    // Correo: forzar minúsculas y limpiar espacios
+    document.getElementById("email").addEventListener("input", function () {
+        this.value = this.value.toLowerCase().replace(/\s/g, "");
+    });
+});
+</script>
+ 
 </body>
 
 </html>
