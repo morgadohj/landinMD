@@ -557,67 +557,289 @@
                     <div class="alert alert-info text-center mb-4">
                         <i class="fas fa-info-circle"></i> Al registrarte tendrás <strong>15 días de prueba gratis</strong> para explorar todas las funcionalidades del sistema
                     </div>
-                    <form id="registrationForm" action="registerHandler.php" method="POST" autocomplete="off">
+                    <form id="registrationForm" action="registerHandler.php" method="POST" autocomplete="off" novalidate>
                         <div id="planInfo" class="alert alert-info text-center mb-4">
                             <!-- La información del plan se cargará dinámicamente -->
                         </div>
                         <!-- Div para mostrar errores -->
                         <div id="registrationError" class="alert alert-danger text-center mb-4" style="display:none;"></div>
+                        
+                        <!-- Div para mostrar información de validación -->
+                        <div id="validationInfo" class="alert alert-info text-center mb-4" style="display:none;">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <span id="validationMessage">Validando datos...</span>
+                        </div>
                         <input type="hidden" name="package_type" id="packageType">
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="company_name" class="form-label">Nombre de la empresa</label>
-                                    <input type="text" name="company_name" id="company_name" class="form-control" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]{2,50}$" title="Solo letras, números y espacios. Mínimo 2 caracteres. No símbolos." required minlength="2" maxlength="50">
-                                    <div class="invalid-feedback">Nombre inválido. Solo letras, números y espacios. Mínimo 2 caracteres.</div>
-                                </div>
+                        <!-- Información de la Empresa -->
+                        <div class="card mb-4 border-0 bg-light">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="mb-0"><i class="fas fa-building me-2"></i>Información de la Empresa</h6>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="alias" class="form-label">Alias de la tienda (sin espacios)</label>
-                                    <input type="text" name="alias" id="alias" class="form-control" pattern="^[a-z0-9_-]{3,30}$" title="Solo minúsculas, números, guiones y guión bajo. Mínimo 3 caracteres. No espacios, no mayúsculas." required minlength="3" maxlength="30">
-                                    <div class="invalid-feedback">Alias inválido. Usa solo minúsculas, números, guiones o guión bajo. Mínimo 3 caracteres.</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label for="company_name" class="form-label fw-bold">
+                                                Nombre o razón social de la empresa <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" 
+                                                   name="company_name" 
+                                                   id="company_name" 
+                                                   class="form-control form-control-lg" 
+                                                   placeholder="Ej: Mi Empresa S.A. de C.V."
+                                                   pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9&., ]{2,100}$" 
+                                                   title="Solo letras, números, espacios y caracteres especiales básicos. Mínimo 2 caracteres." 
+                                                   required 
+                                                   minlength="2" 
+                                                   maxlength="100"
+                                                   autocomplete="organization">
+                                            <div class="invalid-feedback">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                                El nombre de la empresa es obligatorio y debe tener entre 2 y 100 caracteres.
+                                            </div>
+                                            <div class="form-text">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                Nombre o razón social de la empresa en la situación fiscal.
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="username" class="form-label">Nombre del administrador</label>
-                                    <input type="text" name="username" id="username" class="form-control" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{2,50}$" title="Solo letras y espacios. Mínimo 2 caracteres. No símbolos ni números." required minlength="2" maxlength="50">
-                                    <div class="invalid-feedback">Nombre inválido. Solo letras y espacios. Mínimo 2 caracteres.</div>
-                                </div>
+                        <!-- Información del Administrador -->
+                        <div class="card mb-4 border-0 bg-light">
+                            <div class="card-header bg-success text-white">
+                                <h6 class="mb-0"><i class="fas fa-user-shield me-2"></i>Información del Administrador</h6>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Correo electrónico</label>
-                                    <input type="email" name="email" id="email" class="form-control" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|mx|net|org|edu|gov)$" title="Correo debe ser válido y terminar en .com, .mx, .net, .org, .edu o .gov" required maxlength="100">
-                                    <div class="invalid-feedback">Correo inválido. Usa un dominio como .com, .mx, .net, .org, .edu o .gov.</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="username" class="form-label fw-bold">
+                                                Nombre completo <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" 
+                                                   name="username" 
+                                                   id="username" 
+                                                   class="form-control" 
+                                                   placeholder="Ej: Juan Carlos Pérez"
+                                                   pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{2,80}$" 
+                                                   title="Solo letras y espacios. Mínimo 2 caracteres, máximo 80." 
+                                                   required 
+                                                   minlength="2" 
+                                                   maxlength="80"
+                                                   autocomplete="name">
+                                            <div class="invalid-feedback">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                                El nombre es obligatorio y solo puede contener letras y espacios.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label fw-bold">
+                                                Correo electrónico <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="email" 
+                                                   name="email" 
+                                                   id="email" 
+                                                   class="form-control" 
+                                                   placeholder="admin@miempresa.com"
+                                                   title="Ingresa un correo electrónico válido" 
+                                                   required 
+                                                   maxlength="100"
+                                                   autocomplete="email">
+                                            <div class="invalid-feedback">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                                Ingresa un correo electrónico válido.
+                                            </div>
+                                            <div class="form-text">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                Este será tu usuario para acceder al sistema.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label fw-bold">
+                                                Contraseña <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="password" 
+                                                       name="password" 
+                                                       id="password" 
+                                                       class="form-control" 
+                                                       placeholder="Mínimo 8 caracteres"
+                                                       pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" 
+                                                       title="La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y símbolos" 
+                                                       required 
+                                                       minlength="8" 
+                                                       maxlength="50"
+                                                       autocomplete="new-password">
+                                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                                    <i class="fas fa-eye" id="toggleIcon"></i>
+                                                </button>
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                                La contraseña debe tener al menos 8 caracteres con mayúsculas, minúsculas, números y símbolos.
+                                            </div>
+                                            <div class="form-text">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                Usa una contraseña segura para proteger tu cuenta.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="phone" class="form-label fw-bold">
+                                                Teléfono <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="tel" 
+                                                   name="phone" 
+                                                   id="phone" 
+                                                   class="form-control" 
+                                                   placeholder="+52 55 1234 5678"
+                                                   pattern="^(\+52\s?)?[0-9]{10}$" 
+                                                   title="Número de 10 dígitos. Puede iniciar con +52" 
+                                                   required 
+                                                   maxlength="15"
+                                                   autocomplete="tel">
+                                            <div class="invalid-feedback">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                                Ingresa un número de teléfono válido de 10 dígitos.
+                                            </div>
+                                            <div class="form-text">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                Formato: +52 55 1234 5678 o 5512345678
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Contraseña</label>
-                                    <input type="password" name="password" id="password" class="form-control" pattern=".{6,30}" minlength="6" maxlength="30" title="Debe tener entre 6 y 30 caracteres" required>
-                                    <div class="invalid-feedback">Contraseña inválida. Mínimo 6 caracteres.</div>
-                                </div>
+                        <!-- Información Fiscal -->
+                        <div class="card mb-4 border-0 bg-light">
+                            <div class="card-header bg-warning text-dark">
+                                <h6 class="mb-0"><i class="fas fa-file-invoice-dollar me-2"></i>Información Fiscal</h6>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="phone" class="form-label">Teléfono</label>
-                                    <input type="tel" name="phone" id="phone" class="form-control" pattern="^(\+52)?[0-9]{10,15}$" title="Número de 10 a 15 dígitos. Puede iniciar con +52" required minlength="10" maxlength="15">
-                                    <div class="invalid-feedback">Teléfono inválido. Debe tener entre 10 y 15 dígitos, puede iniciar con +52.</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label for="regimen_fiscal" class="form-label fw-bold">
+                                                Régimen Fiscal <span class="text-danger">*</span>
+                                            </label>
+                                            <select name="regimen_fiscal" 
+                                                    id="regimen_fiscal" 
+                                                    class="form-select" 
+                                                    required>
+                                                <option value="">Selecciona un régimen fiscal</option>
+                                                <option value="601">General de Ley Personas Morales</option>
+                                                <option value="603">Personas Morales con Fines no Lucrativos</option>
+                                                <option value="605">Sueldos y Salarios e Ingresos Asimilados a Salarios</option>
+                                                <option value="606">Arrendamiento</option>
+                                                <option value="607">Régimen de Enajenación o Adquisición de Bienes</option>
+                                                <option value="608">Demás ingresos</option>
+                                                <option value="610">Residentes en el Extranjero sin Establecimiento Permanente</option>
+                                                <option value="611">Ingresos por Dividendos (socios y accionistas)</option>
+                                                <option value="612">Personas Físicas con Actividades Empresariales y Profesionales</option>
+                                                <option value="614">Ingresos por intereses</option>
+                                                <option value="615">Régimen de los ingresos por obtención de premios</option>
+                                                <option value="616">Sin obligaciones fiscales</option>
+                                                <option value="620">Sociedades Cooperativas de Producción que optan por diferir sus ingresos</option>
+                                                <option value="621">Incorporación Fiscal</option>
+                                                <option value="622">Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras</option>
+                                                <option value="623">Opcional para Grupos de Sociedades</option>
+                                                <option value="624">Coordinados</option>
+                                                <option value="625">Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas</option>
+                                                <option value="626">Régimen Simplificado de Confianza</option>
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                                Debes seleccionar un régimen fiscal.
+                                            </div>
+                                            <div class="form-text">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                Selecciona el régimen fiscal que corresponde a tu empresa.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="rfc" class="form-label fw-bold">
+                                                RFC <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" 
+                                                   name="rfc" 
+                                                   id="rfc" 
+                                                   class="form-control text-uppercase" 
+                                                   placeholder="ABC123456DEF"
+                                                   pattern="^[A-Z&Ñ]{3,4}[0-9]{6}[A-Z0-9]{3}$" 
+                                                   title="RFC debe tener formato válido: 3-4 letras, 6 números y 3 caracteres alfanuméricos" 
+                                                   required 
+                                                   maxlength="13" 
+                                                   minlength="10"
+                                                   autocomplete="off">
+                                            <div class="invalid-feedback">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                                El RFC debe tener el formato correcto (ej: ABC123456DEF).
+                                            </div>
+                                            <div class="form-text">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                Registro Federal de Contribuyentes de tu empresa.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="address" class="form-label fw-bold">
+                                                Domicilio Fiscal <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" 
+                                                   name="address" 
+                                                   id="address" 
+                                                   class="form-control" 
+                                                   placeholder="12345"
+                                                   pattern="^[0-9]{5}$" 
+                                                   title="Código postal debe tener exactamente 5 dígitos" 
+                                                   required 
+                                                   maxlength="5" 
+                                                   minlength="5"
+                                                   autocomplete="postal-code">
+                                            <div class="invalid-feedback">
+                                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                                El código postal debe tener exactamente 5 dígitos.
+                                            </div>
+                                            <div class="form-text">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                Código postal en tu situación fiscal.
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="text-center">
-                            <button type="submit" class="btn btn-success btn-lg px-5">Registrarme</button>
+                            <button type="submit" class="btn btn-success btn-lg px-5" id="submitBtn">
+                                <i class="fas fa-user-plus me-2"></i>Crear mi cuenta
+                            </button>
+                            <div class="mt-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-shield-alt me-1"></i>
+                                    Tus datos están protegidos y solo se usarán para el funcionamiento del sistema.
+                                </small>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -760,94 +982,340 @@
             }, 800);
         }
 
+        // Toggle de visibilidad de contraseña
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePassword = document.getElementById('togglePassword');
+            const password = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            if (togglePassword && password && toggleIcon) {
+                togglePassword.addEventListener('click', function() {
+                    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                    password.setAttribute('type', type);
+                    toggleIcon.classList.toggle('fa-eye');
+                    toggleIcon.classList.toggle('fa-eye-slash');
+                });
+            }
+
+            // Validación en tiempo real del formulario
+            const form = document.getElementById('registrationForm');
+            if (form) {
+                // Validar campos en tiempo real
+                const inputs = form.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    input.addEventListener('blur', function() {
+                        validateField(this);
+                    });
+                    
+                    input.addEventListener('input', function() {
+                        if (this.classList.contains('is-invalid')) {
+                            validateField(this);
+                        }
+                    });
+                });
+
+                // Validar RFC en tiempo real
+                const rfcInput = document.getElementById('rfc');
+                if (rfcInput) {
+                    rfcInput.addEventListener('input', function() {
+                        this.value = this.value.toUpperCase();
+                    });
+                }
+
+                // Validar código postal en tiempo real
+                const cpInput = document.getElementById('address');
+                if (cpInput) {
+                    cpInput.addEventListener('input', function() {
+                        this.value = this.value.replace(/\D/g, '');
+                        if (this.value.length > 5) {
+                            this.value = this.value.slice(0, 5);
+                        }
+                    });
+                }
+
+                // Validar teléfono en tiempo real
+                const phoneInput = document.getElementById('phone');
+                if (phoneInput) {
+                    phoneInput.addEventListener('input', function() {
+                        let value = this.value.replace(/\D/g, '');
+                        if (value.startsWith('52')) {
+                            value = '+52 ' + value.substring(2);
+                        } else if (value.length === 10) {
+                            value = value;
+                        }
+                        this.value = value;
+                    });
+                }
+
+                // Validación en tiempo real para campos críticos
+                const criticalFields = ['email', 'phone', 'rfc'];
+                criticalFields.forEach(fieldName => {
+                    const field = document.getElementById(fieldName);
+                    if (field) {
+                        field.addEventListener('blur', function() {
+                            validateFieldUniqueness(this);
+                        });
+                    }
+                });
+            }
+        });
+
+        // Función para validar unicidad de campos críticos
+        function validateFieldUniqueness(field) {
+            const fieldName = field.name;
+            const fieldValue = field.value;
+            
+            if (!fieldValue) return; // No validar campos vacíos
+            
+            // Crear FormData solo con el campo a validar
+            const formData = new FormData();
+            formData.append(fieldName, fieldValue);
+            
+            // Validar solo este campo
+            fetch('validate_registration.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.error) {
+                    console.error('Error en validación:', result.error);
+                    return;
+                }
+                
+                // Verificar si el campo ya existe
+                let exists = false;
+                let message = '';
+                
+                switch(fieldName) {
+                    case 'email':
+                        exists = result.email_exists;
+                        message = 'Este correo electrónico ya está registrado';
+                        break;
+                    case 'phone':
+                        exists = result.phone_exists;
+                        message = 'Este teléfono ya está registrado';
+                        break;
+                    case 'rfc':
+                        exists = result.rfc_exists;
+                        message = 'Este RFC ya está registrado';
+                        break;
+                }
+                
+                if (exists) {
+                    // Marcar campo como inválido
+                    field.classList.remove('is-valid');
+                    field.classList.add('is-invalid');
+                    
+                    // Mostrar mensaje de error personalizado
+                    let errorDiv = field.parentNode.querySelector('.invalid-feedback');
+                    if (errorDiv) {
+                        errorDiv.textContent = message;
+                    }
+                } else {
+                    // Campo es válido
+                    field.classList.remove('is-invalid');
+                    field.classList.add('is-valid');
+                }
+            })
+            .catch(error => {
+                console.error('Error al validar campo:', error);
+            });
+        }
+
+        // Función para validar campos individuales
+        function validateField(field) {
+            console.log('Validando campo:', field.name, field.value);
+            const isValid = field.checkValidity();
+            console.log('Validez del campo:', isValid);
+            
+            if (isValid) {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+                console.log('Campo marcado como válido');
+            } else {
+                field.classList.remove('is-valid');
+                field.classList.add('is-invalid');
+                console.log('Campo marcado como inválido');
+            }
+            
+            return isValid;
+        }
+
+        // Función para validar todo el formulario
+        function validateForm() {
+            console.log('Ejecutando validateForm...');
+            const form = document.getElementById('registrationForm');
+            const inputs = form.querySelectorAll('input, select');
+            let isValid = true;
+            
+            console.log('Validando', inputs.length, 'campos...');
+            
+            inputs.forEach((input, index) => {
+                console.log(`Validando campo ${index + 1}:`, input.name, input.value);
+                if (!validateField(input)) {
+                    console.log(`Campo ${input.name} es inválido`);
+                    isValid = false;
+                } else {
+                    console.log(`Campo ${input.name} es válido`);
+                }
+            });
+            
+            console.log('Resultado de validación:', isValid);
+            return isValid;
+        }
+
         // Limpiar el formulario cuando se cierre el modal
-        $('#registrationModal').on('hidden.bs.modal', function () {
+        $('#registrationModal').on('hidden.bs.modal', function() {
             document.getElementById('registrationForm').reset();
+            // Limpiar clases de validación
+            const inputs = document.querySelectorAll('.is-valid, .is-invalid');
+            inputs.forEach(input => {
+                input.classList.remove('is-valid', 'is-invalid');
+            });
+            
+            // Limpiar mensajes de error
             document.getElementById('registrationError').style.display = 'none';
-            document.getElementById('registrationError').innerText = '';
+            
+            // Limpiar mensaje de validación
+            document.getElementById('validationInfo').style.display = 'none';
         });
 
         // Manejar el envío del formulario
         document.getElementById('registrationForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            // Limpiar error previo
-            document.getElementById('registrationError').style.display = 'none';
-            document.getElementById('registrationError').innerText = '';
-            const form = this;
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Procesando...';
-            submitBtn.disabled = true;
-
-            // Obtener valores
-            const email = form.email.value;
-            const phone = form.phone.value;
-            const alias = form.alias.value;
-            const company_name = form.company_name.value;
-
-            // Validar por AJAX antes de enviar
-            $.ajax({
-                url: 'validate_registration.php',
-                type: 'POST',
-                data: { email, phone, alias, company_name },
-                dataType: 'json',
-                success: function(res) {
-                    if (res.error) {
-                        showError('Ocurrió un error: ' + res.error);
-                        submitBtn.innerHTML = originalText;
-                        submitBtn.disabled = false;
-                        return;
-                    }
-                    if (res.email_exists) {
-                        showError('El correo electrónico ingresado ya está registrado. Por favor, utiliza otro.');
-                        submitBtn.innerHTML = originalText;
-                        submitBtn.disabled = false;
-                        return;
-                    }
-                    if (res.phone_exists) {
-                        showError('El número de teléfono ingresado ya está registrado. Por favor, utiliza otro.');
-                        submitBtn.innerHTML = originalText;
-                        submitBtn.disabled = false;
-                        return;
-                    }
-                    if (res.alias_exists) {
-                        showError('El alias de la tienda ya está en uso. Por favor, elige otro alias.');
-                        submitBtn.innerHTML = originalText;
-                        submitBtn.disabled = false;
-                        return;
-                    }
-                    if (res.company_name_exists) {
-                        showError('El nombre de la empresa ya está en uso. Por favor, elige otro nombre.');
-                        submitBtn.innerHTML = originalText;
-                        submitBtn.disabled = false;
-                        return;
-                    }
-
-                    // Si todo está bien, enviar el formulario por AJAX como antes
-                    $.ajax({
-                        url: form.action,
-                        type: 'POST',
-                        data: $(form).serialize(),
-                        success: function(response) {
-                            $('#registrationModal').modal('hide');
-                            setTimeout(function() {
-                                $('#welcomeModal').modal('show');
-                            }, 500);
-                        },
-                        error: function(xhr) {
-                            showError('Ocurrió un error al registrar. Por favor, inténtalo de nuevo más tarde.');
-                        },
-                        complete: function() {
-                            submitBtn.innerHTML = originalText;
-                            submitBtn.disabled = false;
-                        }
-                    });
-                },
-                error: function(xhr) {
-                    showError('No se pudo validar la información. Por favor, revisa tu conexión o inténtalo más tarde.');
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
+            console.log('Formulario enviado - iniciando validación...');
+            
+            // Validar formulario antes de enviar
+            if (!validateForm()) {
+                console.log('Validación falló - mostrando errores...');
+                // Mostrar primer error
+                const firstInvalid = document.querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstInvalid.focus();
                 }
+                return;
+            }
+            
+            console.log('Validación exitosa - validando datos duplicados...');
+            
+            // Obtener el formulario
+            const form = document.getElementById("registrationForm");
+            
+            // Crear FormData para validación
+            const formData = new FormData(form);
+            
+            // Log de datos que se van a validar
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+            
+            // Mostrar loading en el botón
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Validando datos...';
+            submitBtn.disabled = true;
+            
+            // Ocultar mensajes de error previos
+            document.getElementById('registrationError').style.display = 'none';
+            
+            // Mostrar mensaje de validación
+            document.getElementById('validationInfo').style.display = 'block';
+            document.getElementById('validationMessage').textContent = 'Validando que no existan datos duplicados...';
+            
+            // Primero validar datos duplicados
+            fetch('validate_registration.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(validationResult => {
+                console.log('Resultado de validación:', validationResult);
+                
+                // Verificar si hay errores de validación
+                if (validationResult.error) {
+                    throw new Error(validationResult.error);
+                }
+                
+                // Verificar datos duplicados
+                let hasDuplicates = false;
+                let duplicateMessage = '';
+                
+                if (validationResult.email_exists) {
+                    duplicateMessage += 'El correo electrónico ya está registrado. ';
+                    hasDuplicates = true;
+                }
+                
+                if (validationResult.phone_exists) {
+                    duplicateMessage += 'El teléfono ya está registrado. ';
+                    hasDuplicates = true;
+                }
+                
+                if (validationResult.company_name_exists) {
+                    duplicateMessage += 'El nombre de la empresa ya está registrado. ';
+                    hasDuplicates = true;
+                }
+                
+                if (validationResult.rfc_exists) {
+                    duplicateMessage += 'El RFC ya está registrado. ';
+                    hasDuplicates = true;
+                }
+                
+                if (validationResult.alias_exists) {
+                    duplicateMessage += 'El alias generado ya está en uso. ';
+                    hasDuplicates = true;
+                }
+                
+                if (hasDuplicates) {
+                    throw new Error(duplicateMessage);
+                }
+                
+                // Si no hay duplicados, proceder con el registro
+                console.log('No hay duplicados - procediendo con el registro...');
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creando cuenta...';
+                
+                // Actualizar mensaje de validación
+                document.getElementById('validationMessage').textContent = 'Creando tu cuenta en el sistema...';
+                
+                // Enviar datos al registro
+                return fetch('registerHandler.php', {
+                    method: 'POST',
+                    body: formData
+                });
+            })
+            .then(response => {
+                console.log('Respuesta del registro recibida:', response);
+                return response.text();
+            })
+            .then(data => {
+                console.log('Datos de respuesta del registro:', data);
+                if (data === 'ok') {
+                    console.log('Registro exitoso - mostrando modal de bienvenida...');
+                    // Éxito - mostrar modal de bienvenida
+                    $('#registrationModal').modal('hide');
+                    $('#welcomeModal').modal('show');
+                } else {
+                    console.log('Error en registro:', data);
+                    // Error - mostrar mensaje
+                    document.getElementById('registrationError').textContent = data;
+                    document.getElementById('registrationError').style.display = 'block';
+                    // Hacer scroll al error
+                    document.getElementById('registrationError').scrollIntoView({ behavior: 'smooth' });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('registrationError').textContent = error.message || 'Error de conexión. Intenta nuevamente.';
+                document.getElementById('registrationError').style.display = 'block';
+            })
+            .finally(() => {
+                // Restaurar botón
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                // Ocultar mensaje de validación
+                document.getElementById('validationInfo').style.display = 'none';
             });
         });
 
@@ -858,41 +1326,6 @@
             errorDiv.style.display = 'block';
         }
     </script>
-
-    <script>
-document.addEventListener("DOMContentLoaded", function () {
-    // Limpiar el formulario al cargar la página
-    document.getElementById("registrationForm").reset();
-
-    const form = document.getElementById("registrationForm");
-
-    form.addEventListener("submit", function (event) {
-        // HTML5 validation
-        if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        form.classList.add("was-validated");
-    });
-
-    // Prevención adicional: bloquear caracteres raros en nombres
-    ["company_name", "username"].forEach(id => {
-        const el = document.getElementById(id);
-        el.addEventListener("input", () => {
-            el.value = el.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ0-9 ]/g, "");
-        });
-    });
-
-    // Alias solo minúsculas, números, guión y guión bajo
-    document.getElementById("alias").addEventListener("input", function () {
-        this.value = this.value.toLowerCase().replace(/[^a-z0-9_-]/g, "");
-    });
-
-    // Teléfono: solo números y opcionalmente +52 al inicio
-    document.getElementById("phone").addEventListener("input", function () {
-        // Permitir solo dígitos y un posible +52 al inicio
-        let val = this.value.replace(/[^0-9+]/g, "");
-        if(val.startsWith("+")) {
             val = val.replace(/^\+(?!52)/, ""); // Solo permitir +52
             if(!val.startsWith("+52")) val = val.replace(/^\+/, "");
         }

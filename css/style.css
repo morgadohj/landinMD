@@ -10189,3 +10189,186 @@ h6,
   background-color: #1ebe5d;
   text-decoration: none;
 }
+
+/* Estilos adicionales para el formulario mejorado */
+#registrationModal .card {
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+#registrationModal .card:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+#registrationModal .card-header {
+  border-radius: 12px 12px 0 0 !important;
+  border: none;
+  padding: 1rem 1.5rem;
+}
+
+#registrationModal .card-body {
+  padding: 1.5rem;
+}
+
+#registrationModal .form-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+#registrationModal .form-control,
+#registrationModal .form-select {
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+#registrationModal .form-control:focus,
+#registrationModal .form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem rgba(25, 67, 118, 0.15);
+  transform: translateY(-1px);
+}
+
+#registrationModal .form-control.is-valid {
+  border-color: var(--success);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+#registrationModal .form-control.is-invalid {
+  border-color: var(--danger);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 4.6 1.4 1.4m0-1.4-1.4 1.4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+#registrationModal .invalid-feedback {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--danger);
+  margin-top: 0.25rem;
+}
+
+#registrationModal .form-text {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+#registrationModal .input-group {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#registrationModal .input-group .btn {
+  border-radius: 0 8px 8px 0;
+  border-left: none;
+}
+
+#registrationModal .form-check-input {
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: 0.25em;
+  border: 2px solid #dee2e6;
+  border-radius: 4px;
+}
+
+#registrationModal .form-check-input:checked {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+#registrationModal .form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(25, 67, 118, 0.25);
+}
+
+#registrationModal .form-check-label {
+  color: #495057;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+#registrationModal .form-check-label a {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+#registrationModal .form-check-label a:hover {
+  text-decoration: underline;
+}
+
+/* Animaciones para los campos */
+#registrationModal .form-control,
+#registrationModal .form-select {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  #registrationModal .card-body {
+    padding: 1rem;
+  }
+  
+  #registrationModal .form-control,
+  #registrationModal .form-select {
+    padding: 0.625rem 0.875rem;
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+  
+  #registrationModal .btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* Estilos para el botón de envío */
+#submitBtn {
+  background: linear-gradient(135deg, var(--success) 0%, #20c997 100%);
+  border: none;
+  padding: 1rem 3rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+#submitBtn:hover {
+  background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+#submitBtn:disabled {
+  background: #6c757d;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Estilos para los iconos */
+#registrationModal .fas,
+#registrationModal .fa {
+  color: var(--primary);
+}
+
+#registrationModal .card-header .fas,
+#registrationModal .card-header .fa {
+  color: white;
+}
