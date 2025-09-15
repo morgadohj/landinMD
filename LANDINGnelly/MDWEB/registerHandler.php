@@ -24,7 +24,7 @@ $password = $_POST['password']; // No sanitizar contraseñas antes del hash
 $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
 $regimen_fiscal = filter_input(INPUT_POST, 'regimen_fiscal', FILTER_SANITIZE_STRING);
 $rfc = strtoupper(filter_input(INPUT_POST, 'rfc', FILTER_SANITIZE_STRING));
-$address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_STRING);
+$address = filter_input(INPUT_POST, 'address', FILTER_SANITIZE_NUMBER_INT);
 $package_type = filter_input(INPUT_POST, 'package_type', FILTER_SANITIZE_STRING);
 
 // Validar que los campos requeridos no estén vacíos
@@ -51,23 +51,17 @@ try {
     $trial_ends_at = date('Y-m-d H:i:s', strtotime('+15 days'));
 
     // Insertar en company_customer con trial activo
-    // Verificar si es una compra para insertar subscription_expires_at
+    // Verificar si es una compra
     $isPurchase = isset($_POST['is_purchase']) && $_POST['is_purchase'] === 'true';
-    $subscriptionExpiresAt = null;
-    $status = 'pending';
-    if ($isPurchase) {
-        // Si es una compra, la suscripción expira en 30 días
-        $subscriptionExpiresAt = date('Y-m-d H:i:s', strtotime('+30 days'));
-        $status = 'active';
-    }
+    $status = 'active'; // Siempre activo para el trial, el webhook actualizará el payment_status
     
     $stmt1 = $pdo->prepare("
         INSERT INTO company_customer (
             company_name, database_handle, termns_conditions, user, pass,
-            status, payment_status, package_type, id_regimen_fiscal, rfc, address, created_at, trial_ends_at, subscription_expires_at
+            status, payment_status, package_type, id_regimen_fiscal, rfc, address, created_at, trial_ends_at
         ) VALUES (
             :company_name, :database_handle, 0, :user, :pass,
-            :status, 'pending', :package_type, :regimen_fiscal, :rfc, :address, :created_at, :trial_ends_at, :subscription_expires_at
+            :status, 'pending', :package_type, :regimen_fiscal, :rfc, :address, :created_at, :trial_ends_at
         )
     ");
     
@@ -82,7 +76,6 @@ try {
         ':address' => $address,
         ':created_at' => $created_at,
         ':trial_ends_at' => $trial_ends_at,
-        ':subscription_expires_at' => $subscriptionExpiresAt,
         ':status' => $status
     ]);
 
@@ -101,8 +94,19 @@ try {
     // Regenerar token CSRF después de operación exitosa
     regenerateCSRFToken();
     
-    // No redirigir, solo responder
-    echo "ok";
+    // Si es una compra, generar el external_reference para el pago
+    if ($isPurchase) {
+        $external_reference = $company_id . '|' . $package_type;
+        echo json_encode([
+            'success' => true,
+            'company_id' => $company_id,
+            'external_reference' => $external_reference,
+            'package_type' => $package_type
+        ]);
+    } else {
+        // Para registros de prueba gratuita
+        echo "ok";
+    }
     exit;
 
 } catch (PDOException $e) {

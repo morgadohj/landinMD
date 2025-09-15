@@ -882,7 +882,7 @@
                     </form>
                 </div>
                 <div class="modal-footer border-0 bg-white">
-                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" style="border-radius: var(--radius);">Cerrar</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="changePlan()" data-dismiss="modal" style="border-radius: var(--radius);">Cerrar</button>
                     <button type="button" class="btn btn-outline-primary" onclick="changePlan()" style="border-radius: var(--radius);">Cambiar Plan</button>
                 </div>
             </div>

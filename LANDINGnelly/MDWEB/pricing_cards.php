@@ -265,7 +265,7 @@ try {
             data-plan-type="single"
             data-plan-period="<?= $singleMonthly ? ($singleMonthly['frequency'] === 'anual' ? 'yearly' : 'monthly') : 'monthly' ?>"
             <?= !$singleMonthly ? 'style="opacity: 0.5; pointer-events: none;"' : '' ?>
-            onclick="openPurchaseModal('single', '<?= $singleMonthly ? ($singleMonthly['frequency'] === 'anual' ? 'yearly' : 'monthly') : 'monthly' ?>', '<?= $singleMonthly ? $singleMonthly['url'] : '#' ?>');"
+            onclick="openPurchaseModal('single', '<?= $singleMonthly ? ($singleMonthly['frequency'] === 'anual' ? 'yearly' : 'monthly') : 'monthly' ?>', '<?= $singleMonthly ? $singleMonthly['url'] : '#' ?>', '<?= $singleMonthly ? $singleMonthly['id'] : '' ?>');"
             >Comprar ahora</button
           >
         </div>
@@ -316,7 +316,7 @@ try {
             data-plan-type="multi"
             data-plan-period="<?= $multiMonthly ? ($multiMonthly['frequency'] === 'anual' ? 'yearly' : 'monthly') : 'monthly' ?>"
             <?= !$multiMonthly ? 'style="opacity: 0.5; pointer-events: none;"' : '' ?>
-            onclick="openPurchaseModal('multi', '<?= $multiMonthly ? ($multiMonthly['frequency'] === 'anual' ? 'yearly' : 'monthly') : 'monthly' ?>', '<?= $multiMonthly ? $multiMonthly['url'] : '#' ?>');"
+            onclick="openPurchaseModal('multi', '<?= $multiMonthly ? ($multiMonthly['frequency'] === 'anual' ? 'yearly' : 'monthly') : 'monthly' ?>', '<?= $multiMonthly ? $multiMonthly['url'] : '#' ?>', '<?= $multiMonthly ? $multiMonthly['id'] : '' ?>');"
             >Comprar ahora</button
           >
         </div>
@@ -453,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // ACTUALIZAR EL EVENTO ONCLICK DEL BOTÓN
                 const period = isYearly ? 'yearly' : 'monthly';
-                linkElement.onclick = () => openPurchaseModal('single', period, plan.url);
+                linkElement.onclick = () => openPurchaseModal('single', period, plan.url, plan.id);
                 
                 // ACTUALIZAR BOTÓN "PROBAR GRATIS" CON EL PERÍODO CORRECTO
                 const tryButton = document.querySelector('.tier:first-child .btn-cta');
@@ -498,7 +498,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // ACTUALIZAR EL EVENTO ONCLICK DEL BOTÓN
                 const period = isYearly ? 'yearly' : 'monthly';
-                linkElement.onclick = () => openPurchaseModal('multi', period, plan.url);
+                linkElement.onclick = () => openPurchaseModal('multi', period, plan.url, plan.id);
                 
                 // ACTUALIZAR BOTÓN "PROBAR GRATIS" CON EL PERÍODO CORRECTO
                 const tryButton = document.querySelector('.tier:last-child .btn-cta');

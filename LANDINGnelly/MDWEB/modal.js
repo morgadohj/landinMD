@@ -113,15 +113,65 @@ function openRegistrationModal(package, period) {
 // - package: tipo de plan ('single', 'multi', 'basic', 'premium')
 // - period: período de facturación ('yearly' o 'monthly')
 // - url: URL de MercadoPago para redirigir después del registro
-function openPurchaseModal(package, period, url) {
-    // Guardar la URL para redirigir después del registro
-    window.purchaseRedirectUrl = url;
+// - planId: ID del plan en la base de datos
+function openPurchaseModal(package, period, url, planId) {
+    // Guardar el ID del plan para usar después del registro
+    window.currentPlanId = planId;
     
     // Marcar que es una compra para insertar subscription_expires_at
     window.isPurchase = true;
     
     // Abrir el modal de registro con el plan seleccionado
     openRegistrationModal(package, period);
+}
+
+// Función para generar preferencia de pago después del registro
+function generatePaymentPreference(companyId, packageType, planId) {
+    // Mostrar indicador de carga
+    const loadingModal = document.createElement('div');
+    loadingModal.className = 'modal fade';
+    loadingModal.innerHTML = `
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p>Generando enlace de pago...</p>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(loadingModal);
+    $(loadingModal).modal('show');
+    
+    // Generar suscripción (PreApproval) basada en el plan seleccionado
+    fetch('plans/suscribtion.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `company_id=${companyId}&package_type=${packageType}&plan_id=${planId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        $(loadingModal).modal('hide');
+        document.body.removeChild(loadingModal);
+        
+        if (data.success) {
+            // Redirigir al enlace de pago
+            window.open(data.payment_url, '_blank');
+            window.registrationCompleted = false;
+        } else {
+            alert('Error al generar el enlace de pago: ' + (data.error || 'Error desconocido'));
+        }
+    })
+    .catch(error => {
+        $(loadingModal).modal('hide');
+        document.body.removeChild(loadingModal);
+        console.error('Error:', error);
+        alert('Error de conexión al generar el enlace de pago');
+    });
 }
 
 // Función para cambiar de plan
@@ -450,26 +500,33 @@ document
                 // Limpiar cualquier error previo
                 document.getElementById("registrationError").style.display = "none";
                 
-                if (data === "ok") {
-                    // Marcar que el registro se completó exitosamente
+                // Verificar si es una respuesta JSON (compra) o texto simple (prueba gratuita)
+                let responseData;
+                try {
+                    responseData = JSON.parse(data);
+                } catch (e) {
+                    responseData = data;
+                }
+                
+                if (responseData === "ok" || (responseData.success && !responseData.external_reference)) {
+                    // Registro de prueba gratuita exitoso
                     window.registrationCompleted = true;
                     
                     // Éxito - mostrar modal de bienvenida
                     $("#registrationModal").modal("hide");
                     $("#welcomeModal").modal("show");
                     
-                    // Si hay una URL de redirección guardada, redirigir después de un breve delay
-                    if (window.purchaseRedirectUrl && window.purchaseRedirectUrl !== '#') {
-                        setTimeout(() => {
-                            window.open(window.purchaseRedirectUrl, '_blank');
-                            // Limpiar la URL guardada después de la redirección exitosa
-                            window.purchaseRedirectUrl = null;
-                            window.registrationCompleted = false;
-                        }, 2000); // 2 segundos de delay para que el usuario vea el modal de bienvenida
-                    } else {
-                        // Reset del flag si no hay redirección
-                        window.registrationCompleted = false;
-                    }
+                    // Reset del flag
+                    window.registrationCompleted = false;
+                } else if (responseData.success && responseData.external_reference) {
+                    // Registro de compra exitoso - generar preferencia de pago
+                    window.registrationCompleted = true;
+                    
+                    // Ocultar modal de registro
+                    $("#registrationModal").modal("hide");
+                    
+                    // Generar preferencia de pago
+                    generatePaymentPreference(responseData.company_id, responseData.package_type, window.currentPlanId);
                 } else {
                     // Error - mostrar mensaje
                     document.getElementById("registrationError").textContent = data;
