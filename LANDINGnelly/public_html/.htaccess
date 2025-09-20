@@ -1,0 +1,11 @@
+# Protección básica
+Options -Indexes
+
+# Bloquear archivos sensibles
+<Files "config.php">
+    Require all denied
+</Files>
+
+<Files ".env">
+    Require all denied
+</Files>
