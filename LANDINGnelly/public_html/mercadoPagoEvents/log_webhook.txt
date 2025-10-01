@@ -1,4 +1,0 @@
-[2025-09-15 06:43:26] 
-[2025-09-16 23:35:32] {"action":"updated","application_id":"8150074147758897","data":{"id":"123456"},"date":"2021-11-01T02:02:02Z","entity":"preapproval","id":"123456","type":"subscription_preapproval","version":8}
-[2025-09-16 23:53:11] {"action":"updated","application_id":"8150074147758897","data":{"id":"123456"},"date":"2021-11-01T02:02:02Z","entity":"preapproval","id":"123456","type":"subscription_preapproval","version":8}
-[2025-09-16 23:53:33] {"action":"updated","application_id":"8150074147758897","data":{"id":"123456"},"date":"2021-11-01T02:02:02Z","entity":"preapproval","id":"123456","type":"subscription_preapproval","version":8}

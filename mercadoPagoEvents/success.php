@@ -23,7 +23,7 @@ if ($external_reference) {
 if ($company_id && $package_type && $status === 'approved' && $payment_id && $payment_type) {
     try {
         // Determinar el intervalo de suscripción según el tipo de paquete
-        $interval = (strpos($package_type, 'Anual') !== false) ? '1 YEAR' : '1 MONTH';
+        $interval = (strpos($package_type, 'Anual') !== false || strpos($package_type, 'anual') !== false) ? '1 YEAR' : '1 MONTH';
         
         $stmt = $pdo->prepare("
             UPDATE company_customer 
@@ -32,17 +32,20 @@ if ($company_id && $package_type && $status === 'approved' && $payment_id && $pa
                 payment_reference = ?, 
                 payment_method = ?, 
                 package_type = ?,
+                subscription_id = ?,
                 paid_at = NOW(),
                 subscription_expires_at = DATE_ADD(NOW(), INTERVAL $interval)
             WHERE id = ?
         ");
-        $stmt->execute([$payment_id, $payment_type, $package_type, $company_id]);
+        $stmt->execute([$payment_id, $payment_type, $package_type, $payment_id, $company_id]);
+        
+        error_log("Success page updated: company_id=$company_id, status=$status, package_type=$package_type");
         
     } catch (PDOException $e) {
         error_log("Error al actualizar estado de pago: " . $e->getMessage());
     }
 } else {
-    error_log("Datos incompletos o no aprobado: status=$status, company_id=$company_id, package_type=$package_type");
+    error_log("Datos incompletos o no aprobado: status=$status, company_id=$company_id, package_type=$package_type, payment_id=$payment_id, payment_type=$payment_type");
 }
 ?>
 
@@ -318,11 +321,12 @@ if ($company_id && $package_type && $status === 'approved' && $payment_id && $pa
                         <div class="text-center mt-5 pt-4">
                             <h4 class="mb-4">¿Qué te gustaría hacer ahora?</h4>
                             <div class="d-flex flex-wrap justify-content-center gap-3">
-                                <a href="http://localhost/SistemaPos/" class="btn btn-primary btn-lg">
+                                <a href="../index.php" class="btn btn-primary btn-lg">
                                     <i class="fas fa-sign-in-alt me-2"></i>Ir al Sistema
                                 </a>
-             
-                          
+                                <a href="mailto:soporte@mdsystems.com.mx" class="btn btn-outline-primary btn-lg">
+                                    <i class="fas fa-envelope me-2"></i>Contactar Soporte
+                                </a>
                             </div>
                             
                             <div class="mt-5 pt-3">

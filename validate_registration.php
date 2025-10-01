@@ -1,19 +1,59 @@
 <?php
+// Configuración de producción - deshabilitar logs de depuración
+error_reporting(0);
+ini_set('display_errors', 0);
+
 require_once 'config.php';
 
 header('Content-Type: application/json');
 
-// Habilitar reporte de errores para depuración
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// Sanitizar y validar entradas
+$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+$phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
+$company_name = filter_input(INPUT_POST, 'company_name', FILTER_SANITIZE_STRING);
+$rfc = strtoupper(trim(filter_input(INPUT_POST, 'rfc', FILTER_SANITIZE_STRING)));
 
-$email = $_POST['email'] ?? '';
-$phone = $_POST['phone'] ?? '';
-$company_name = $_POST['company_name'] ?? '';
-$rfc = $_POST['rfc'] ?? '';
+// Log para debug
+error_log("Validación - Email: " . ($email ?: 'NULL') . ", Phone: " . ($phone ?: 'NULL') . ", Company: " . ($company_name ?: 'NULL') . ", RFC: " . ($rfc ?: 'NULL'));
+
+// Validaciones adicionales de formato (solo si los campos no están vacíos y tienen formato mínimo)
+if ($email && strlen($email) > 3 && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    error_log("Error: Email inválido - " . $email);
+    http_response_code(400);
+    echo json_encode(['error' => 'Formato de email inválido']);
+    exit;
+}
+
+if ($phone && strlen($phone) >= 10 && !preg_match('/^[\+]?[0-9\s\-\(\)]{10,15}$/', $phone)) {
+    error_log("Error: Teléfono inválido - " . $phone);
+    http_response_code(400);
+    echo json_encode(['error' => 'Formato de teléfono inválido']);
+    exit;
+}
+
+if ($rfc && strlen($rfc) >= 10 && !preg_match('/^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{3}$/', $rfc)) {
+    error_log("Error: RFC inválido - " . $rfc);
+    http_response_code(400);
+    echo json_encode(['error' => 'Formato de RFC inválido']);
+    exit;
+}
+
+// Validar que los campos requeridos no estén vacíos
+if (empty($email) || empty($phone) || empty($company_name) || empty($rfc)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Todos los campos son requeridos']);
+    exit;
+}
+
+// Validar formato de email
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Formato de email inválido']);
+    exit;
+}
 
 // Generar alias automáticamente a partir del nombre de la empresa
-$alias = strtolower(str_replace(' ', '', $company_name));
+$alias = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $company_name));
 $database_handle = '_pos_' . $alias;
 
 $response = [
@@ -26,9 +66,8 @@ $response = [
 ];
 
 try {
-    // Usar PDO para consistencia con el resto del proyecto
-    $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Usar la conexión PDO unificada de config.php
+    // $pdo ya está disponible desde require_once 'config.php'
 
     // Verificar email
     $stmt = $pdo->prepare("SELECT 1 FROM users WHERE email = ?");
@@ -61,8 +100,10 @@ try {
     $stmt->closeCursor();
 
 } catch (PDOException $e) {
-    $response['error'] = 'Error de conexión a la base de datos: ' . $e->getMessage();
+    // Log del error para administradores (no mostrar al usuario)
     error_log("Error en validate_registration.php: " . $e->getMessage());
+    $response['error'] = 'Error interno del servidor. Por favor, intente más tarde.';
+    http_response_code(500);
 }
 
 echo json_encode($response);

@@ -258,10 +258,10 @@
                         <div class="text-center mt-5 pt-4">
                             <h4 class="mb-4">¿Qué puedes hacer mientras tanto?</h4>
                             <div class="d-flex flex-wrap justify-content-center gap-3">
-                                <a href="../index.html" class="btn btn-primary btn-lg">
+                                <a href="../index.php" class="btn btn-primary btn-lg">
                                     <i class="fas fa-home me-2"></i>Volver al Inicio
                                 </a>
-                                <a href="../about.html" class="btn btn-outline-primary btn-lg">
+                                <a href="../about.php" class="btn btn-outline-primary btn-lg">
                                     <i class="fas fa-info-circle me-2"></i>Conocer Más
                                 </a>
                             </div>
