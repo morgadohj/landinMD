@@ -561,41 +561,53 @@
 
     <!-- Registration Modal -->
     <div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: var(--radius);">
-                <div class="modal-header border-0 bg-white">
-                    <h4 class="modal-title text-center w-100" id="registrationModalLabel" style="color: var(--navy);">
-                        <i class="fas fa-rocket me-2" style="color: var(--navy);"></i>Registro de nueva tienda
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+                <div class="modal-header border-0" style="background: linear-gradient(135deg, var(--navy) 0%, #1e3a8a 100%); color: white; padding: 2rem;">
+                    <h4 class="modal-title text-center w-100" id="registrationModalLabel" style="color: white; font-weight: 600; font-size: 1.5rem;">
+                        <i class="fas fa-rocket me-3" style="color: var(--amber);"></i>Registro de Nueva Tienda
                     </h4>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-4">
+                <div class="modal-body p-0" style="background: #f8fafc;">
                     <!-- Plan Info -->
-                    <div id="planInfo" class="text-center mb-4 p-3" style="background: var(--bg-soft); border-radius: var(--radius);">
+                    <div id="planInfo" class="text-center p-4" style="background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%); border-bottom: 1px solid #e2e8f0;">
                         <!-- La información del plan se cargará dinámicamente -->
                     </div>
                     
                     <!-- Progress Bar -->
-                    <div class="progress mb-4" style="height: 8px; border-radius: 4px; background: var(--bg-soft);">
-                        <div class="progress-bar" id="progressBar" role="progressbar" style="width: 25%; background: var(--navy); border-radius: 4px;"></div>
+                    <div class="px-4 pt-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">Progreso del registro</span>
+                            <span class="text-muted small" id="stepCounter">Paso 1 de 4</span>
+                        </div>
+                        <div class="progress" style="height: 6px; border-radius: 10px;">
+                            <div class="progress-bar" id="progressBar" role="progressbar" style="width: 25%; background: linear-gradient(90deg, var(--amber) 0%, #f59e0b 100%); border-radius: 10px; transition: width 0.3s ease;"></div>
+                        </div>
                     </div>
                     
                     <!-- Step Indicators -->
-                    <div class="d-flex justify-content-between mb-4">
-                        <div class="step-indicator active" data-step="1">
-                            <div class="step-circle">1</div>
-                            <span class="step-text">Empresa</span>
-                        </div>
-                        <div class="step-indicator" data-step="2">
-                            <div class="step-circle">2</div>
-                            <span class="step-text">Administrador</span>
-                        </div>
-                        <div class="step-indicator" data-step="3">
-                            <div class="step-circle">3</div>
-                            <span class="step-text">Fiscal</span>
-                        </div>
-                        <div class="step-indicator" data-step="4">
-                            <div class="step-circle">4</div>
-                            <span class="step-text">Revisar</span>
+                    <div class="px-4 pb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="step-indicator active" data-step="1" style="text-align: center; flex: 1;">
+                                <div class="step-circle" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--amber) 0%, #f59e0b 100%); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; margin: 0 auto 8px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">1</div>
+                                <div class="step-label" style="font-size: 0.85rem; font-weight: 500; color: var(--navy);">Empresa</div>
+                            </div>
+                            <div class="step-line" style="height: 2px; background: #e2e8f0; flex: 1; margin: 0 10px;"></div>
+                            <div class="step-indicator" data-step="2" style="text-align: center; flex: 1;">
+                                <div class="step-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: 600; margin: 0 auto 8px; transition: all 0.3s ease;">2</div>
+                                <div class="step-label" style="font-size: 0.85rem; font-weight: 500; color: #64748b;">Administrador</div>
+                            </div>
+                            <div class="step-line" style="height: 2px; background: #e2e8f0; flex: 1; margin: 0 10px;"></div>
+                            <div class="step-indicator" data-step="3" style="text-align: center; flex: 1;">
+                                <div class="step-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: 600; margin: 0 auto 8px; transition: all 0.3s ease;">3</div>
+                                <div class="step-label" style="font-size: 0.85rem; font-weight: 500; color: #64748b;">Fiscal</div>
+                            </div>
+                            <div class="step-line" style="height: 2px; background: #e2e8f0; flex: 1; margin: 0 10px;"></div>
+                            <div class="step-indicator" data-step="4" style="text-align: center; flex: 1;">
+                                <div class="step-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; color: #64748b; display: flex; align-items: center; justify-content: center; font-weight: 600; margin: 0 auto 8px; transition: all 0.3s ease;">4</div>
+                                <div class="step-label" style="font-size: 0.85rem; font-weight: 500; color: #64748b;">Revisar</div>
+                            </div>
                         </div>
                     </div>
                     
@@ -613,29 +625,32 @@
                         <input type="hidden" name="is_purchase" id="isPurchase" value="false">
 
                         <!-- Step 1: Información de la Empresa -->
-                        <div class="form-step active" id="step1">
-                            <div class="text-center mb-4">
-                                <h5 style="color: var(--navy);">Información de la Empresa</h5>
-                                <p class="text-muted">Cuéntanos sobre tu negocio</p>
+                        <div class="form-step active" id="step1" style="padding: 2rem;">
+                            <div class="text-center mb-5">
+                                <div class="mb-3">
+                                    <i class="fas fa-building" style="font-size: 3rem; color: var(--amber);"></i>
+                                </div>
+                                <h4 style="color: var(--navy); font-weight: 600; margin-bottom: 0.5rem;">Información de la Empresa</h4>
+                                <p class="text-muted" style="font-size: 1.1rem;">Cuéntanos sobre tu negocio para comenzar</p>
                             </div>
                             
                             <div class="row justify-content-center">
                                 <div class="col-md-8">
                                     <div class="mb-4">
-                                        <label for="company_name" class="form-label fw-bold" style="color: var(--navy);">
-                                            Nombre o razón social de la empresa <span class="text-danger">*</span>
+                                        <label for="company_name" class="form-label fw-bold" style="color: var(--navy); font-size: 1rem;">
+                                            <i class="fas fa-building me-2" style="color: var(--amber);"></i>Nombre o razón social de la empresa <span class="text-danger">*</span>
                                         </label>
                                         <input type="text" 
                                                name="company_name" 
                                                id="company_name" 
                                                class="form-control form-control-lg" 
                                                placeholder="Ej: Mi Empresa S.A. de C.V."
-                                               style="border-radius: var(--radius); border: 2px solid var(--line);"
+                                               style="border-radius: 12px; border: 2px solid #e2e8f0; padding: 1rem; font-size: 1rem; transition: all 0.3s ease;"
                                                required 
                                                minlength="2" 
                                                maxlength="100"
                                                autocomplete="organization">
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-feedback" style="font-size: 0.9rem; margin-top: 0.5rem;">
                                             <i class="fas fa-exclamation-triangle me-1"></i>
                                             El nombre de la empresa es obligatorio y debe tener entre 2 y 100 caracteres.
                                         </div>
@@ -645,10 +660,13 @@
                         </div>
 
                         <!-- Step 2: Información del Administrador -->
-                        <div class="form-step" id="step2">
-                            <div class="text-center mb-4">
-                                <h5 style="color: var(--navy);">Información del Administrador</h5>
-                                <p class="text-muted">Datos de la persona principal</p>
+                        <div class="form-step" id="step2" style="padding: 2rem;">
+                            <div class="text-center mb-5">
+                                <div class="mb-3">
+                                    <i class="fas fa-user-tie" style="font-size: 3rem; color: var(--amber);"></i>
+                                </div>
+                                <h4 style="color: var(--navy); font-weight: 600; margin-bottom: 0.5rem;">Información del Administrador</h4>
+                                <p class="text-muted" style="font-size: 1.1rem;">Datos de la persona responsable de la cuenta</p>
                             </div>
                             
                             <div class="row justify-content-center">
@@ -862,20 +880,25 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div id="walletBrick_container"></div>
                             </div>
                         </div>
 
                         <!-- Navigation Buttons -->
-                        <div class="d-flex justify-content-between mt-4">
-                            <button type="button" class="btn btn-outline-secondary" id="prevBtn" style="display: none; border-radius: var(--radius);">
-                                <i class="fas fa-arrow-left me-2"></i>Anterior
-                            </button>
-                            <button type="button" class="btn btn-primary" id="nextBtn" style="background: var(--navy); border: none; border-radius: var(--radius); color: white;">
-                                Siguiente<i class="fas fa-arrow-right ms-2"></i>
-                            </button>
-                            <button type="submit" class="btn btn-success" id="submitBtn" style="display: none; border-radius: var(--radius);">
-                                <i class="fas fa-user-plus me-2"></i>Crear mi cuenta
-                            </button>
+                        <div class="px-4 pb-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <button type="button" class="btn btn-outline-secondary" id="prevBtn" style="display: none; border-radius: 12px; padding: 0.75rem 1.5rem; font-weight: 500; border: 2px solid #e2e8f0; color: #64748b;">
+                                    <i class="fas fa-arrow-left me-2"></i>Anterior
+                                </button>
+                                <div class="flex-grow-1"></div>
+                                <button type="button" class="btn btn-primary" id="nextBtn" style="background: linear-gradient(135deg, var(--navy) 0%, #1e3a8a 100%); border: none; border-radius: 12px; padding: 0.75rem 2rem; font-weight: 500; color: white; box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);">
+                                    Siguiente<i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                                <button type="submit" class="btn btn-success" id="submitBtn" style="display: none; border-radius: 12px; padding: 0.75rem 2rem; font-weight: 500; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                                    <i class="fas fa-check me-2"></i>Completar Registro
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -961,10 +984,89 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
-    <script>
-        
-    </script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
     <script src="modal.js?v=<?php echo time(); ?>"></script>
+    
+    <style>
+        /* Estilos mejorados para el formulario */
+        .form-control:focus {
+            border-color: var(--amber) !important;
+            box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.25) !important;
+            transform: translateY(-1px);
+        }
+        
+        .form-control:hover {
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+        
+        .form-control.is-valid {
+            border-color: #10b981 !important;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2310b981' d='m2.3 6.73.94-.94 1.4 1.4 3.4-3.4.94.94-4.34 4.34z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
+        
+        .form-control.is-invalid {
+            border-color: #ef4444 !important;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23ef4444'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 4.6 1.4 1.4 1.4-1.4'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .form-step {
+            transition: all 0.3s ease;
+        }
+        
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .step-circle {
+            transition: all 0.3s ease;
+        }
+        
+        .modal-content {
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert {
+            animation: alertSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes alertSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
 
   </body>
 </html>

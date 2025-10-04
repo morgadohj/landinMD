@@ -12,7 +12,7 @@ $environment = 'development'; // Cambiar a 'production' en producción
 if ($environment === 'development') {
     // CONFIGURACIÓN DE DESARROLLO
     $MP_ACCESS_TOKEN = 'TEST-8150074147758897-090711-4fe937019f4a54cad537c4c50938372b-2537727051';
-    $base_url = 'https://d16d9f9afe09.ngrok-free.app';
+    $base_url = 'https://a5abf3d77b51.ngrok-free.app';
     
     define('DB_HOST', 'localhost');
     define('DB_PORT', '3306');
@@ -22,7 +22,7 @@ if ($environment === 'development') {
     
     // Configurar MercadoPago para desarrollo
     MercadoPagoConfig::setAccessToken($MP_ACCESS_TOKEN);
-    MercadoPagoConfig::setRuntimeEnviroment(MercadoPagoConfig::LOCAL);
+
 } else {
     // CONFIGURACIÓN DE PRODUCCIÓN
     //acces de la empresa $MP_ACCESS_TOKEN = 'APP_USR-7333534419911855-091519-422c030a27e7b99d01a76845bd9ba461-2093626681';

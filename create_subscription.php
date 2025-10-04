@@ -1,7 +1,8 @@
 <?php
-// Crear suscripciones automáticamente usando la API de MercadoPago
+// Crear preferencias de pago para suscripciones usando la API de MercadoPago
 require __DIR__ . '/config.php';
 
+use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Client\PreApproval\PreApprovalClient;
 use MercadoPago\Exceptions\MPApiException;
 
@@ -85,74 +86,67 @@ try {
         exit;
     }
 
-    // 4) Crear la suscripción (PreApproval) usando la API de MercadoPago
-    $preApprovalClient = new PreApprovalClient();
+    // 4) Crear una preferencia de pago para la suscripción
+    $preferenceClient = new PreferenceClient();
     
     // Determinar el precio a usar (precio oferta si existe, sino precio base)
     $amount = $plan['price_offer'] ?: $plan['price_base'];
     
-    // Determinar la frecuencia según el tipo de paquete
-    $frequency = (strpos($package_type, 'Anual') !== false || strpos($package_type, 'anual') !== false) ? 12 : 1;
-    $frequency_type = 'months';
-    
-    // Crear la suscripción
-    $preApprovalData = [
-        'reason' => $plan['name'],
-        'external_reference' => $company_id . '|' . $package_type,
-        'payer_email' => $payer_email,
-        'auto_recurring' => [
-            'frequency' => $frequency,
-            'frequency_type' => $frequency_type,
-            'transaction_amount' => (float)$amount,
-            'currency_id' => 'MXN',
-            'start_date' => date('Y-m-d\TH:i:s.000\Z', strtotime('+1 minute')),
-            'end_date' => date('Y-m-d\TH:i:s.000\Z', strtotime('+1 year'))
+    // Crear la preferencia de pago
+    $preferenceData = [
+        'items' => [
+            [
+                'id' => 'subscription_' . $plan_id,
+                'title' => $plan['name'],
+                'description' => 'Suscripción ' . $package_type,
+                'quantity' => 1,
+                'unit_price' => (float)$amount,
+                'currency_id' => 'MXN'
+            ]
         ],
-        'back_url' => BASE_URL . '/mercadoPagoEvents/success.php',
-        'status' => 'pending'
+        'payer' => [
+            'email' => $payer_email
+        ],
+        'external_reference' => $company_id . '|' . $package_type . '|' . $plan_id,
+        'notification_url' => BASE_URL . '/mercadoPagoEvents/webhook.php',
+        'back_urls' => [
+            'success' => BASE_URL . '/mercadoPagoEvents/success.php',
+            'failure' => BASE_URL . '/mercadoPagoEvents/failure.php',
+            'pending' => BASE_URL . '/mercadoPagoEvents/pending.php'
+        ],
+        'auto_return' => 'approved',
+        'payment_methods' => [
+            'excluded_payment_methods' => [],
+            'excluded_payment_types' => [],
+            'installments' => 1
+        ]
     ];
 
-    log_debug('Creando suscripción con datos: ' . json_encode($preApprovalData));
+    log_debug('Creando preferencia de pago con datos: ' . json_encode($preferenceData));
     
-    $preApproval = $preApprovalClient->create($preApprovalData);
+    $preference = $preferenceClient->create($preferenceData);
     
-    log_debug('Suscripción creada exitosamente: ID=' . $preApproval->id . ', Status=' . $preApproval->status);
+    log_debug('Preferencia creada exitosamente: ID=' . $preference->id);
     
-    // 5) Actualizar la base de datos con la información de la suscripción
-    $stmt = $pdo->prepare("
-        UPDATE company_customer 
-        SET payment_status = ?, 
-            payment_reference = ?, 
-            payment_method = 'subscription',
-            subscription_id = ?
-        WHERE id = ?
-    ");
-    $stmt->execute([
-        $preApproval->status,
-        $preApproval->id,
-        $preApproval->id,
-        $company_id
-    ]);
-    
-    log_debug('Base de datos actualizada para company_id=' . $company_id . ' con subscription_id=' . $preApproval->id);
-    
-    // 6) Obtener la URL de autorización de la suscripción
-    $init_point = $preApproval->init_point ?? null;
+    // 5) Obtener la URL de pago de la preferencia
+    $init_point = $preference->init_point ?? null;
     
     if (!$init_point) {
-        log_debug('No se obtuvo init_point de la suscripción creada');
+        log_debug('No se obtuvo init_point de la preferencia creada');
         http_response_code(500);
-        echo json_encode(['success' => false, 'error' => 'No se pudo obtener la URL de autorización de la suscripción']);
+        echo json_encode(['success' => false, 'error' => 'No se pudo obtener la URL de pago de la preferencia']);
         exit;
     }
     
-    log_debug('Suscripción creada exitosamente. URL de autorización: ' . $init_point);
+    log_debug('Preferencia creada exitosamente. URL de pago: ' . $init_point);
     
     echo json_encode([
         'success' => true,
-        'subscription_id' => $preApproval->id,
+        'preference_id' => $preference->id,
         'payment_url' => $init_point,
-        'status' => $preApproval->status
+        'company_id' => $company_id,
+        'package_type' => $package_type,
+        'plan_id' => $plan_id
     ]);
     
 } catch (MPApiException $e) {
